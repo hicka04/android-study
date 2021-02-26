@@ -5,13 +5,15 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Query
+import javax.inject.Singleton
 
 interface QiitaAPI {
     @GET("items")
@@ -21,9 +23,11 @@ interface QiitaAPI {
 }
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 object QiitaAPIModule {
+    @ExperimentalSerializationApi
     @Provides
+    @Singleton
     fun provideQiitaAPI(): QiitaAPI {
         val contentType = MediaType.get("application/json")
         return Retrofit.Builder()

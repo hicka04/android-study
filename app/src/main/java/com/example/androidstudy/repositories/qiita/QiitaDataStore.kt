@@ -4,8 +4,9 @@ import com.example.androidstudy.repositories.qiita.entities.Article
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface QiitaRepository {
     suspend fun searchArticles(keyword: String? = null): List<Article>
@@ -18,9 +19,10 @@ class QiitaDataStore @Inject constructor(private val qiitaAPI: QiitaAPI): QiitaR
 }
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 abstract class QiitaRepositoryModule {
     @Binds
+    @Singleton
     abstract fun bindQiitaRepository(
         qiitaDataStore: QiitaDataStore
     ): QiitaRepository
