@@ -5,16 +5,20 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 interface QiitaRepository {
-    suspend fun searchArticles(keyword: String? = null): List<Article>
+    fun searchArticles(keyword: String? = null): Flow<List<Article>>
 }
 
 class QiitaDataStore @Inject constructor(private val qiitaAPI: QiitaAPI): QiitaRepository {
-    override suspend fun searchArticles(keyword: String?): List<Article> {
-        return qiitaAPI.searchArticles(keyword).body() ?: listOf()
+    override fun searchArticles(keyword: String?): Flow<List<Article>> = flow {
+        qiitaAPI.searchArticles(keyword).body()?.let {
+            emit(it)
+        }
     }
 }
 

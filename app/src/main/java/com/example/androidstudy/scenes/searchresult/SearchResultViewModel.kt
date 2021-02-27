@@ -1,21 +1,22 @@
 package com.example.androidstudy.scenes.searchresult
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.androidstudy.repositories.qiita.QiitaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchResultViewModel @Inject constructor(
     private val qiitaRepository: QiitaRepository
 ): ViewModel() {
+    private val _keyword = MutableLiveData<String>()
+    val articles = liveData(viewModelScope.coroutineContext) {
+        qiitaRepository.searchArticles(_keyword.value)
+            .collect { emit(it) }
+    }
+
     fun onViewCreated() {
-        viewModelScope.launch {
-            val response = qiitaRepository.searchArticles("kotlin")
-            Log.d("SearchResultViewModel", response.toString())
-        }
+        _keyword.postValue("kotlin")
     }
 }
