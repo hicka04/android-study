@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidstudy.R
 import com.example.androidstudy.databinding.SearchResultFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,9 +18,9 @@ class SearchResultFragment: Fragment(R.layout.search_result_fragment) {
 
         val binding = SearchResultFragmentBinding.bind(view)
 
-        viewModel.articles.observe(viewLifecycleOwner) {
-            binding.text.text = it.toString()
-        }
+        val searchResultAdapter = SearchResultAdapter(viewModel.articles, this)
+        binding.searchResultList.adapter = searchResultAdapter
+        binding.searchResultList.layoutManager = LinearLayoutManager(context)
 
         viewModel.onViewCreated()
     }
