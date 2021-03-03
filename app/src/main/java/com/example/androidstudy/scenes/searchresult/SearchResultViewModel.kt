@@ -10,7 +10,7 @@ class SearchResultViewModel @Inject constructor(
     private val qiitaRepository: QiitaRepository
 ): ViewModel() {
     private val _keyword = MutableLiveData<String>()
-    val articles = liveData(viewModelScope.coroutineContext) {
+    val articles = liveData {
         emitSource(
             qiitaRepository.searchArticles(_keyword.value).asLiveData()
         )
