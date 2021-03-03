@@ -3,19 +3,21 @@ package com.example.androidstudy.scenes.searchresult
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidstudy.databinding.ItemSearchResultBinding
 import com.example.androidstudy.repositories.qiita.entities.Article
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 
 class SearchResultAdapter(
-    private val articles: LiveData<List<Article>>,
+    private val articles: StateFlow<List<Article>>,
     lifecycleOwner: LifecycleOwner,
     private val onArticleClickListener: (Article) -> Unit
 ): RecyclerView.Adapter<SearchResultAdapter.ViewHolder>() {
     init {
-        articles.observe(lifecycleOwner) {
-            notifyDataSetChanged()
+        lifecycleOwner.lifecycleScope.launchWhenStarted {
+            articles.collect { notifyDataSetChanged() }
         }
     }
 
@@ -31,11 +33,12 @@ class SearchResultAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(articles.value!![position])
-        holder.itemView.setOnClickListener { onArticleClickListener(articles.value!![position]) }
+        val article = articles.value[position]
+        holder.bind(article)
+        holder.itemView.setOnClickListener { onArticleClickListener(article) }
     }
 
     override fun getItemCount(): Int {
-        return articles.value?.size ?: 0
+        return articles.value.size
     }
 }
