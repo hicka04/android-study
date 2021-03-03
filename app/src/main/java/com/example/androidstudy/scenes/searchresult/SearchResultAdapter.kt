@@ -10,7 +10,8 @@ import com.example.androidstudy.repositories.qiita.entities.Article
 
 class SearchResultAdapter(
     private val articles: LiveData<List<Article>>,
-    lifecycleOwner: LifecycleOwner
+    lifecycleOwner: LifecycleOwner,
+    private val onArticleClickListener: (Article) -> Unit
 ): RecyclerView.Adapter<SearchResultAdapter.ViewHolder>() {
     init {
         articles.observe(lifecycleOwner) {
@@ -31,6 +32,7 @@ class SearchResultAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(articles.value!![position])
+        holder.itemView.setOnClickListener { onArticleClickListener(articles.value!![position]) }
     }
 
     override fun getItemCount(): Int {
