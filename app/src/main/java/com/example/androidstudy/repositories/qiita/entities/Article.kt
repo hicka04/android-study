@@ -8,4 +8,4 @@ data class Article(
     val title: String,
     val url: String,
     val user: User
-)
+): java.io.Serializable

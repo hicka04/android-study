@@ -15,7 +15,6 @@ class SearchResultViewModel @Inject constructor(
     private val qiitaRepository: QiitaRepository
 ): ViewModel() {
     private val _keyword = MutableStateFlow("")
-    @ExperimentalCoroutinesApi
     val articles = _keyword
         .flatMapLatest { qiitaRepository.searchArticles(it) }
         .stateIn(
