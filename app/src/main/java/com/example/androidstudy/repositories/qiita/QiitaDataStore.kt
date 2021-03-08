@@ -5,8 +5,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +21,7 @@ class QiitaDataStore @Inject constructor(private val qiitaAPI: QiitaAPI): QiitaR
         qiitaAPI.searchArticles(keyword).body()?.let {
             emit(it)
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }
 
 @Module
