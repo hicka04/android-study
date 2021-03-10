@@ -13,12 +13,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface QiitaRepository {
-    fun searchArticles(keyword: String? = null): Flow<List<Article>>
+    fun searchArticles(
+        keyword: String? = null,
+        page: Int? = null,
+        perPage: Int? = null
+    ): Flow<List<Article>>
 }
 
 class QiitaDataStore @Inject constructor(private val qiitaAPI: QiitaAPI): QiitaRepository {
-    override fun searchArticles(keyword: String?): Flow<List<Article>> = flow {
-        qiitaAPI.searchArticles(keyword).body()?.let {
+    override fun searchArticles(keyword: String?, page: Int?, perPage: Int?): Flow<List<Article>> = flow {
+        qiitaAPI.searchArticles(keyword, page, perPage).body()?.let {
             emit(it)
         }
     }.flowOn(Dispatchers.IO)

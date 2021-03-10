@@ -18,7 +18,9 @@ import javax.inject.Singleton
 interface QiitaAPI {
     @GET("items")
     suspend fun searchArticles(
-        @Query("query") query: String? = null
+        @Query("query") query: String? = null,
+        @Query("page") page: Int? = null,
+        @Query("per_page") perPage: Int? = null
     ): Response<List<Article>>
 }
 

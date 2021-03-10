@@ -1,16 +1,16 @@
 package com.example.androidstudy.scenes.searchresult
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidstudy.R
 import com.example.androidstudy.databinding.FragmentSearchResultBinding
-import com.example.androidstudy.scenes.detail.DetailFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class SearchResultFragment: Fragment(R.layout.fragment_search_result) {
@@ -21,12 +21,18 @@ class SearchResultFragment: Fragment(R.layout.fragment_search_result) {
 
         val binding = FragmentSearchResultBinding.bind(view)
 
-        val searchResultAdapter = SearchResultAdapter(viewModel.articles, this) { article ->
+        val searchResultAdapter = SearchResultAdapter { article ->
             val action = SearchResultFragmentDirections.actionSearchResultFragmentToDetailFragment(article)
             findNavController().navigate(action)
         }
         binding.searchResultList.adapter = searchResultAdapter
         binding.searchResultList.layoutManager = LinearLayoutManager(context)
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.articles.collect {
+                searchResultAdapter.submitData(it)
+            }
+        }
 
         viewModel.onViewCreated()
     }
